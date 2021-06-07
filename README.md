@@ -32,19 +32,22 @@
 
 配置[Router2]的f0/1.1和f0/1.2两个子端口的命令：
 ```shell
-Router#
-Router#configure terminal
-Router(config)#int fa0/1.1
-Router(config-subif)#encapsulation dot1Q 2 //dot1Q为这个接口配置802.1Q协议，最后面的 2是vlan 号
+Router>en
+Router#conf t
+Router(config)#int fa0/1  //开启端口fa0/1
+Router(config-if)#no shut
+Router(config-if)#int fa0/1.1
+Router(config-subif)#encapsulation dot1q 2 
+//重要指令，dot1Q为这个接口配置802.1Q协议 ，最后的2是设置为vlan2的意思
 Router(config-subif)#ip add 192.168.2.254 255.255.255.0
 Router(config-subif)#no shut
-Router(config-subif)#end
-Router(config)#int f0/1.2
-Router(config-subif)#encapsulation dot1Q 3
+Router(config-subif)#int fa0/1.2
+Router(config-subif)#encapsulation dot1q 3
 Router(config-subif)#ip add 192.168.3.254 255.255.255.0
-Router(config-subif)#no shut
-Router(config)#interface FastEthernet0/1
-Router(config-if)#no shutdown
+Router(config-subif)#no shut 
+Router(config)#int fa0/0
+Router(config-if)#ip address 192.168.4.100 255.255.255.0
+Router(config-if)#no shut
 ```
 设置交换机[Switch 1]的f0/1为trunk模式(Switch 2同理)，划分VLAN:
 ```shell
@@ -85,8 +88,7 @@ Switch(config-if)#no shut
 Switch>en
 Switch#conf t
 Switch(config)#int fa0/1
-Switch(config-if)#switchport mode trunk
-Switch(config-if)#switchport trunk allowed vlan all
+Switch(config-if)#switchport access vlan 5 //这里写vlan 4或者vlan 5都可以,虚接口
 Switch(config-if)#exit
 Switch(config)#int vlan 4
 Switch(config-if)#ip add 172.16.4.254 255.255.255.0
@@ -94,6 +96,14 @@ Switch(config-if)#no shut
 Switch(config-if)#int vlan 5
 Switch(config-if)#ip add 172.16.5.254 255.255.255.0
 Switch(config-if)#no shut
+Switch(config)#int vlan 10
+Switch(config)#int fa0/2
+Switch(config-if)#switchport access vlan 10
+Switch(config-if)#exit
+Switch(config)#int vlan 10 //配置一个vlan10虚接口作为路由出口
+Switch(config-if)#ip add 172.16.1.100 255.255.255.0
+Switch(config-if)#no shut
+Switch(config-if)#exit
 ```
 ## 动态路由-OSPF协议：
 
@@ -136,7 +146,7 @@ Router(config-router)#network 202.121.241.0 0.0.0.255 area 1
 Router(config-router)#network 10.1.2.0 0.0.0.255 area 2
 Router(config-router)#network 192.168.4.0 0.0.0.255 area 3
 Router(config-router)#network 172.16.1.0 0.0.0.255 area 4
-Router(config-router)#log-adjacency-changes 
+Router(config-router)#log-adjacency-changes //开启日志功能
 ```
 Router2:
 ```shell
@@ -148,12 +158,14 @@ Router(config)#router ospf 3
 Router(config-router)#router-id 3.3.3.3
 Router(config-router)#network 5.5.5.0 0.0.0.255 area 0
 Router(config-router)#network 192.168.4.0 0.0.0.255 area 3
-Router(config-router)#network 3.3.3.0 0.0.0.255 area 3
 Router(config-router)#network 192.168.2.0 0.0.0.255 area 3
 Router(config-router)#network 192.168.3.0 0.0.0.255 area 3
-Router(config-router)#log-adjacency-changes 
+Router(config-router)#network 3.3.3.0 0.0.0.255 area 3
+Router(config-router)#log-adjacency-changes //开启日志功能
 Router(config-router)#exit
 Router(config)#ip route 0.0.0.0 0.0.0.0 192.168.4.101
+Router(config)#end
+Router#
 ```
 MS1:
 ```shell
@@ -194,3 +206,8 @@ Switch(config-router)#exit
 Switch(config)#
 Switch(config)#ip route 0.0.0.0 0.0.0.0 172.16.1.101 //缺省路由
 ```
+
+## 至此所有设备均可以完成通讯,剩下的就是NAT协议和ACL策略组的布置了
+
+连通效果图：
+![image](https://user-images.githubusercontent.com/57565901/121059622-40eaa800-c7f4-11eb-8a56-9187653606e0.png)
