@@ -13,14 +13,14 @@
 请根据以上需求，给出学院的具体网络设计方案，各楼栋分布与节点数需求，画出网络拓扑结构设计图，给出VLAN 及 所有IP 地址规划，完成设备选型，详细实验配置等。并将以上所有内容记录在实验报告上。
 
 
-## Ox01:按照拓扑图添加好设备，并标明接口和IP等等
+## 0x01:按照拓扑图添加好设备，并标明接口和IP等等
 
 ![image](https://user-images.githubusercontent.com/57565901/121010883-8abd9900-c7c8-11eb-9a8b-440e22b6dc99.png)
 
 >注意其中核心路由器Router1，我们要先关闭电源，添加接口模块 `NM-2FE2W` 和 `WIC-1T` ：
 ![image](https://user-images.githubusercontent.com/57565901/121011001-b17bcf80-c7c8-11eb-9774-01a7cd08fca4.png)
 
-## Ox02:下面便是配置计算机IP、网关、掩码和路由器端口了
+## 0x02:下面便是配置计算机IP、网关、掩码和路由器端口了
 
 ![image](https://user-images.githubusercontent.com/57565901/121011872-b0976d80-c7c9-11eb-85b6-3f496f9f864b.png)
 
@@ -105,16 +105,16 @@ Switch(config-if)#ip add 172.16.1.100 255.255.255.0
 Switch(config-if)#no shut
 Switch(config-if)#exit
 ```
-## Ox03:动态路由-OSPF协议：
+## 0x03:动态路由-OSPF协议：
 
 关于ospf、bgp中的Router-ID和loopback接口：
 > 动态路由协议OSPF 、BGP 在运行过程中需要为该协议指定一个Router id，作为此路由器的唯一标识，并要求在整个自治系统内唯一。由于router id 是一个32 位的无符号整数，这一点与IP地址十分相像。而且IP 地址是不会出现重复现象的，所以通常将路由器的router id指定为与该设备上的某个接口的地址相同。由于loopback 接口的IP 地址通常被视为路由器的标识，所以也就成了router id的最佳选择。
 
-### Ox0301:关于ospf中区域``area``的划分如下,中间的终端路由器为``area 0``作为骨干网络连接其他网络:
+### 0x0301:关于ospf中区域``area``的划分如下,中间的终端路由器为``area 0``作为骨干网络连接其他网络:
 
 ![image](https://user-images.githubusercontent.com/57565901/121023330-c3b03a80-c7d5-11eb-84b3-2dcc540634aa.png)
 
-### Ox0301:动态路由配置命令：
+### 0x0301:动态路由配置命令：
 Router ISP:
 ```shell
 Router(config)#int loopback0 //设置回环接口
@@ -207,7 +207,7 @@ Switch(config)#
 Switch(config)#ip route 0.0.0.0 0.0.0.0 172.16.1.101 //缺省路由
 ```
 
-## Ox04:至此所有设备均可以完成通讯,剩下的就是NAT协议和ACL策略组的布置了
+## 0x04:至此所有设备均可以完成通讯,剩下的就是NAT协议和ACL策略组的布置了
 
 连通效果图：
 ![image](https://user-images.githubusercontent.com/57565901/121059622-40eaa800-c7f4-11eb-8a56-9187653606e0.png)
