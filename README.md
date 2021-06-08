@@ -299,14 +299,14 @@ Router(config)#
 
 使用浏览器访问数据中心datacenter的80端口：
 
->PC1:教学楼1设备
->PC2:教学楼2设备
->在上图中PC1和PC2不能直接通过ICMP(ping命令)访问datacenter，保证数据中心安全。
+>PC1:教学楼1设备  
+>PC2:教学楼2设备  
+>在上图中PC1和PC2不能直接通过ICMP(ping命令)访问datacenter，保证数据中心安全。  
 
 ![image](https://user-images.githubusercontent.com/57565901/121219349-2f69d480-c8b6-11eb-80b9-3a400441ff94.png)
 ![image](https://user-images.githubusercontent.com/57565901/121219393-3a246980-c8b6-11eb-9c6a-9ea46f1061cb.png)
 
 ## 0x05:至此我们完成了实验六所有的实验要求
 
->所有命令、截图都为本人完成，仅供参考，拒绝转载。
->By Auspic1ous 大二菜鸡
+>所有命令、截图都为本人完成，仅供参考，拒绝转载。   
+>By Auspic1ous 大二菜鸡  
