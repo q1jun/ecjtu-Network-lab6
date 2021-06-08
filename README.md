@@ -226,3 +226,64 @@ Switch(config)#ip route 0.0.0.0 0.0.0.0 172.16.1.101 //缺省路由
   （6）在学院核心路由器上设置标准ACL或扩展ACL，允许教学楼的用户只可以访问数据中心服务器的WWW服务和FTP服务。
 允许宿舍楼的用户可以访问外网的资源，也能访问教学楼的资源，其余的都不可以访问。
 ```
+>这里WWW服务即TCP协议端口默认为80，FTP文件传输协议默认端口为21。
+
+因为要使`宿舍楼1`和`宿舍楼2`能访问外网，而`教学楼1`和`教学楼2`不能访问外网，
+所以我们只需要对教学楼所属网段设置对应的动态NAT即可
+
+>此处注意nat相关的标准访问控制列表acl只能是路由器接口in方向
+
+我们创建一个动态NAT的地址池为：202.121.241.9~202.121.241.100 (子网掩码/24)
+对于核心路由器Router 1:
+```shell
+Router>en
+Router#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#access-list 10 permit 172.16.0.0 0.0.255.255
+Router(config)#access-list 10 deny any
+Router(config)#int fa1/0
+Router(config-if)#ip access-group 10 in
+Router(config-if)#exit
+Router(config)#ip nat pool nat-pool_1 202.121.241.9 202.121.241.100 netmask 255.255.255.0
+Router(config)#ip nat inside source list 10 pool nat-pool_1
+Router(config)#int fa1/0
+Router(config-if)#ip nat inside
+Router(config-if)#int s0/3/0
+Router(config-if)#ip nat outside
+Router(config-if)#exit
+```
+
+测试刚刚配置的动态NAT，让宿舍楼1和宿舍楼2的PC与外网设备通信,通过以下指令查看动态路由结果:
+```shell
+Router#sh ip nat translations 
+Pro  Inside global     Inside local       Outside local      Outside global
+icmp 202.121.241.10:1  172.16.5.22:1      219.220.240.101:1  219.220.240.101:1
+icmp 202.121.241.9:2   172.16.4.22:2      219.220.240.101:2  219.220.240.101:2
+```
+ 
+这里我们完成了宿舍楼通过NAT访问外网,下面设置的ACL将令教学楼1和教学楼2不能访问外网。
+对于核心路由器Router 1:
+```shell
+Router#en
+Router#conf t
+Router(config)#access-list 102 permit ip 172.16.0.0 0.0.255.255 any
+Router(config)#access-list 102 deny ip 192.168.0.0 0.0.255.255 any
+Router(config)#access-list 102 permit ip any any
+Router(config)#int s0/3/0
+Router(config-if)#ip access-group 102 out
+Router(config-if)#exit
+Router(config)#
+```
+下面设置只能访问数据中心的80和21端口。
+对于核心路由器Router 1:
+```shell
+Router#en
+Router#conf t
+Router(config)#access-list 101 permit tcp any 10.1.0.0 0.0.255.255 eq 80
+Router(config)#access-list 101 permit tcp any 10.1.0.0 0.0.255.255 eq 21
+Router(config)#access-list 101 deny ip any any
+Router(config)#int fa1/1
+Router(config-if)#ip access-group 101 out
+Router(config-if)#exit
+Router(config)#
+```
