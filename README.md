@@ -207,12 +207,12 @@ Switch(config)#
 Switch(config)#ip route 0.0.0.0 0.0.0.0 172.16.1.101 //缺省路由
 ```
 
-## 0x04:至此所有设备均可以完成通讯,剩下的就是NAT协议和ACL策略组的布置了
-
 连通效果图：
 ![image](https://user-images.githubusercontent.com/57565901/121059622-40eaa800-c7f4-11eb-8a56-9187653606e0.png)
 
-### 0x0401 访问控制列表ACL
+
+## 0x04:至此所有设备均可以完成通讯,剩下的就是NAT协议和ACL策略组的布置了
+
 
   标准IP访问控制列表，一个标准IP访问控制列表匹配IP协议包钟的源地址或源地址中的一部分，
 可对匹配的协议包采取拒绝或允许两个操作。编号范围是从1~99.
@@ -287,3 +287,26 @@ Router(config-if)#ip access-group 101 out
 Router(config-if)#exit
 Router(config)#
 ```
+### 最终效果:
+
+>PC0:外网设备
+>PC1:教学楼1设备
+>PC2:教学楼2设备
+>PC3:宿舍楼1设备
+>PC4:宿舍楼2设备
+
+![image](https://user-images.githubusercontent.com/57565901/121219035-e023a400-c8b5-11eb-924a-08596d229a44.png)
+
+使用浏览器访问数据中心datacenter的80端口：
+
+>PC1:教学楼1设备
+>PC2:教学楼2设备
+>在上图中PC1和PC2不能直接通过ICMP(ping命令)访问datacenter，保证数据中心安全。
+
+![image](https://user-images.githubusercontent.com/57565901/121219349-2f69d480-c8b6-11eb-80b9-3a400441ff94.png)
+![image](https://user-images.githubusercontent.com/57565901/121219393-3a246980-c8b6-11eb-9c6a-9ea46f1061cb.png)
+
+## 0x05:至此我们完成了实验六所有的实验要求
+
+>所有命令、截图都为本人完成，仅供参考，拒绝转载。
+>By Auspic1ous 大二菜鸡
