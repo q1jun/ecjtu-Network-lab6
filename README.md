@@ -244,16 +244,21 @@ Router(config)#access-list 10 deny any
 Router(config)#int fa1/0
 Router(config-if)#ip access-group 10 in
 Router(config-if)#exit
+//创建一个地址池,地址池命名为nat-pool_1 
 Router(config)#ip nat pool nat-pool_1 202.121.241.9 202.121.241.100 netmask 255.255.255.0
+//设置地址池nat-pool_1到inside方向，附加访问控制列表10
 Router(config)#ip nat inside source list 10 pool nat-pool_1
 Router(config)#int fa1/0
+//设置接口fa1/0为NAT内接口
 Router(config-if)#ip nat inside
+//设置接口s0/3/0为NAT外接口
 Router(config-if)#int s0/3/0
 Router(config-if)#ip nat outside
 Router(config-if)#exit
 ```
 
 测试刚刚配置的动态NAT，让宿舍楼1和宿舍楼2的PC与外网设备通信,通过以下指令查看动态路由结果:
+这里可以发现第一列inside global 中出现了我们建好的地址池中的IP
 ```shell
 Router#sh ip nat translations 
 Pro  Inside global     Inside local       Outside local      Outside global
