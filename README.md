@@ -289,11 +289,11 @@ Router(config)#
 ```
 ### 最终效果:
 
->PC0:外网设备
->PC1:教学楼1设备
->PC2:教学楼2设备
->PC3:宿舍楼1设备
->PC4:宿舍楼2设备
+>PC0:外网设备  
+>PC1:教学楼1设备  
+>PC2:教学楼2设备  
+>PC3:宿舍楼1设备  
+>PC4:宿舍楼2设备  
 
 ![image](https://user-images.githubusercontent.com/57565901/121219035-e023a400-c8b5-11eb-924a-08596d229a44.png)
 
