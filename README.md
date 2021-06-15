@@ -292,6 +292,31 @@ Router(config-if)#ip access-group 101 out
 Router(config-if)#exit
 Router(config)#
 ```
+<!-- wp:paragraph -->
+<p>个人疏忽，其实还有教学楼与宿舍楼不能互通，并且宿舍楼不能访问数据中心，只需要在101策略组最后一条前加上一条：</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code>access-list 101 deny ip 172.16.0.0 0.0.255.255 any</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>在Router1的f0/0接口上加上一个103策略组：</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code>
+Router#conf t
+
+
+Router(config)#access-list 103 deny ip 192.168.0.0 0.0.255.255 172.16.0.0 0.0.255.255
+
+Router(config)#access-list 103 permit ip any any
+Router(config)#int fa0/0
+
+Router(config-if)#ip access-group 103 in
+Router(config-if)#exit</code></pre>
+<!-- /wp:code -->
 ### 最终效果:
 
 >PC0:外网设备  
